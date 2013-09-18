@@ -32,7 +32,7 @@
             {
                 if (autoStartups.Any(s => !ReferenceEquals(autoStartup, s) && autoStartup.Path == s.Path))
                 {
-                    throw new ConfictingPathException(autoStartups);
+                    throw new ConflictingPathException(autoStartups);
                 }
             }
         }

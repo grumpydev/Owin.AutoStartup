@@ -3,7 +3,7 @@
     using System;
     using System.Linq;
 
-    internal class ConfictingPathException : Exception
+    internal class ConflictingPathException : Exception
     {
         private const string MessageTemplate = "AutoStartups with conflicting paths were found. Discovered AutoStartups:\n\n{0}";
 
@@ -17,7 +17,7 @@
             }
         }
 
-        public ConfictingPathException(IAutoStartup[] autoStartups)
+        public ConflictingPathException(IAutoStartup[] autoStartups)
         {
             this.autoStartups = autoStartups;
         }

@@ -44,7 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AutoStartupExtentions.cs" />
-    <Compile Include="ConfictingPathException.cs" />
+    <Compile Include="ConflictingPathException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="IAutoStartup.cs" />
     <Compile Include="Startup.cs" />
