@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>OWIN.AutoStartup Diagnostics</title>
+
+    <style type="text/css">
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: black;
+            color: #aaaaaa;
+            font-family: Consolas,'Andale Mono','Lucida Console','DejaVu Sans Mono',monospace;
+            font-size: 0.9em;
+        }
+
+        h1 {
+            margin: 0;
+            padding: 8px;
+            display: block;
+            width: 100%;
+            background: #444444;
+            color: #eeeeee;
+        }
+
+        ul {
+            list-style-type: none;
+        }
+
+        .autostartupName {
+            color: #eeeeee;
+            font-weight: bold;
+        }
+
+        #contents {
+            padding-left: 16px;
+            padding-right: 16px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Owin.AutoStartup Diagnostics</h1>
+    <div id="contents">
+        <h2>Registered AutoStartups</h2>
+        <ul>
+            @Each
+        <li>
+            <span class="autostartupName">@!Current.Name</span>
+            <ul>
+                <li>Path : @!Current.Path</li>
+            </ul>
+        </li>
+            @EndEach
+        </ul>
+    </div>
+</body>
+</html>
