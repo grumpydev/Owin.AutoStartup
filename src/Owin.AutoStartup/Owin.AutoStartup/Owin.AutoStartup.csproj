@@ -49,6 +49,7 @@
     <Compile Include="Diags\Diags.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="IAutoStartup.cs" />
+    <Compile Include="SegmentCountComparer.cs" />
     <Compile Include="SSVE\IViewEngineHost.cs" />
     <Compile Include="SSVE\SuperSimpleViewEngine.cs" />
     <Compile Include="SSVE\ViewEngineHost.cs" />

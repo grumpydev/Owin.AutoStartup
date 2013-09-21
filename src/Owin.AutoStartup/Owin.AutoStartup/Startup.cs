@@ -29,7 +29,7 @@
                 builder.UseDiags(autoStartups);
             }
 
-            foreach (var autoStartup in autoStartups)
+            foreach (var autoStartup in autoStartups.SortBySegmentCount())
             {
                 autoStartup.Configuration(builder);
             }

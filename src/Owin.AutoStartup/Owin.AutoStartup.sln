@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Owin.AutoStartup", "Owin.Au
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Owin.AutoStartup.Demo", "Owin.AutoStartup.Demo\Owin.AutoStartup.Demo.csproj", "{FCC30CEB-CFF3-466E-A6AA-8CE4AEE3AE7E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Owin.AutoStartup.Tests", "Owin.AutoStartup.Tests\Owin.AutoStartup.Tests.csproj", "{719B1F11-AA8B-4838-9A56-F3402E7BD049}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,6 +21,10 @@ Global
 		{FCC30CEB-CFF3-466E-A6AA-8CE4AEE3AE7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FCC30CEB-CFF3-466E-A6AA-8CE4AEE3AE7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FCC30CEB-CFF3-466E-A6AA-8CE4AEE3AE7E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{719B1F11-AA8B-4838-9A56-F3402E7BD049}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{719B1F11-AA8B-4838-9A56-F3402E7BD049}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{719B1F11-AA8B-4838-9A56-F3402E7BD049}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{719B1F11-AA8B-4838-9A56-F3402E7BD049}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
