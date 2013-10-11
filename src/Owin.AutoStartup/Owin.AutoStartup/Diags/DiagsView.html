@@ -37,22 +37,44 @@
             padding-left: 16px;
             padding-right: 16px;
         }
+
+        .highlight {
+            font-weight: bold;
+            color: #eeeeee;
+        }
+
+        .reference {
+            font-size: 0.6em;
+            color: #555555;
+        }
     </style>
 </head>
 <body>
     <h1>Owin.AutoStartup Diagnostics</h1>
     <div id="contents">
+        @IfNot.IsDiagsRequest
+        <h2>Oops!</h2> 
+        <p>It appears that none of your installed middleware processed the request<sup>*</sup>. This may be intentional or you have have forgotten to install an AutoStartup to handle this request.</p>
+        <p>The requested path is: <span class="highlight">@Model.Path</span></p>
+        @EndIf
         <h2>Registered AutoStartups</h2>
         <ul>
-            @Each
-        <li>
-            <span class="autostartupName">@!Current.Name</span>
-            <ul>
-                <li>Path : @!Current.Path</li>
-            </ul>
-        </li>
+            @Each.AutoStartups
+            <li>
+                <span class="autostartupName">@!Current.Name</span>
+                <ul>
+                    <li>Path : @!Current.Path</li>
+                </ul>
+            </li>
             @EndEach
         </ul>
+        <p>You can disable this diagnostics page by removing the <span class="highlight">owin:AutoStartupDiagnostics</span> key from the web/app.config, or setting its value to <span class="highlight">false</span></p>
+        @IfNot.IsDiagsRequest
+        <p class="reference">
+            * Owin.AutoStartup automatically tries to detect if no headers were added and no body was written and assumes no response has been created if 
+            both of these things are true. If you are receiving this page in error, please file a bug :-)
+        </p>
+        @EndIf
     </div>
 </body>
 </html>

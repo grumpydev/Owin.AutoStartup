@@ -16,6 +16,10 @@
 
         private const string OwinResponseBody = "owin.ResponseBody";
 
+        private const string OwinRequestPath = "owin.RequestPath";
+
+        private const string OwinResponseHeaders = "owin.ResponseHeaders";
+
         private readonly Task completedTask;
 
         private readonly IAutoStartup[] autoStartups;
@@ -25,8 +29,6 @@
         private readonly SuperSimpleViewEngine ssve;
 
         private readonly ViewEngineHost ssveHost;
-
-        private static string OwinResponseHeaders = "owin.ResponseHeaders";
 
         public Diags(Func<IDictionary<string, object>, Task> next, IEnumerable<IAutoStartup> autoStartups)
         {
@@ -45,7 +47,7 @@
         {
             if (IsDiagsRequest(environment))
             {
-                return this.RenderDiags(environment);
+                return this.RenderDiags(environment, true);
             }
 
             var responseHeaderKeys = GetInitialResponseHeaders(environment);
@@ -68,7 +70,7 @@
                             }
                         }
 
-                        return this.RenderDiags(environment);
+                        return this.RenderDiags(environment, false);
                     },
                     TaskContinuationOptions.NotOnCanceled | TaskContinuationOptions.NotOnFaulted);
         }
@@ -109,16 +111,25 @@
 
         private static bool IsDiagsRequest(IDictionary<string, object> environment)
         {
-            var path = (string)environment["owin.RequestPath"];
+            var path = (string)environment[OwinRequestPath];
 
             return DiagsPath.Equals(path, StringComparison.OrdinalIgnoreCase);
         }
 
-        private Task RenderDiags(IDictionary<string, object> environment)
+        private Task RenderDiags(IDictionary<string, object> environment, bool isDiagsRequest)
         {
             var template = this.LoadResource("Owin.AutoStartup.Diags.DiagsView.html");
+            var path = (string)environment[OwinRequestPath];
 
-            var output = this.ssve.Render(template, this.autoStartups, this.ssveHost);
+            var output = this.ssve.Render(
+                                template, 
+                                new 
+                                {
+                                    AutoStartups = this.autoStartups,
+                                    Path = path,
+                                    IsDiagsRequest = isDiagsRequest
+                                }, 
+                                this.ssveHost);
 
             this.WriteResponse(environment, output, "text/html; charset=utf-8");
 
