@@ -14,6 +14,8 @@
     {
         private const string DiagsPath = "/__asdiags";
 
+        private const string OwinResponseBody = "owin.ResponseBody";
+
         private readonly Task completedTask;
 
         private readonly IAutoStartup[] autoStartups;
@@ -23,6 +25,8 @@
         private readonly SuperSimpleViewEngine ssve;
 
         private readonly ViewEngineHost ssveHost;
+
+        private static string OwinResponseHeaders = "owin.ResponseHeaders";
 
         public Diags(Func<IDictionary<string, object>, Task> next, IEnumerable<IAutoStartup> autoStartups)
         {
@@ -39,16 +43,71 @@
 
         public Task Invoke(IDictionary<string, object> environment)
         {
-            if (this.IsDiagsRequest(environment))
+            if (IsDiagsRequest(environment))
             {
                 return this.RenderDiags(environment);
             }
-            System.Diagnostics.Trace.WriteLine(string.Format("Hitting TestLogger, path: {0}", environment["owin.RequestPath"]));
 
-            return this.RunNext(environment);
+            var responseHeaderKeys = GetInitialResponseHeaders(environment);
+            var responseStream = WrapResponseStream(environment);
+
+            return this.RunNext(environment).ContinueWith(
+                t =>
+                    {
+                        if (CheckAndUnwrapResponseStream(environment))
+                        {
+                            return t;
+                        }
+
+                        var outputResponseHeaders = (IDictionary<string, string[]>)environment[OwinResponseHeaders];
+                        foreach (var outputResponseHeader in outputResponseHeaders)
+                        {
+                            if (!responseHeaderKeys.Any(k => k.Equals(outputResponseHeader.Key)))
+                            {
+                                return t;
+                            }
+                        }
+
+                        return this.RenderDiags(environment);
+                    },
+                    TaskContinuationOptions.NotOnCanceled | TaskContinuationOptions.NotOnFaulted);
         }
 
-        private bool IsDiagsRequest(IDictionary<string, object> environment)
+        private static bool CheckAndUnwrapResponseStream(IDictionary<string, object> environment)
+        {
+            var responseStream = environment[OwinResponseBody] as WrappedStream;
+
+            if (responseStream == null)
+            {
+                return false;
+            }
+
+            environment[OwinResponseBody] = responseStream.UnWrap();
+
+            return responseStream.HasBeenWrittenTo;
+        }
+
+        private static WrappedStream WrapResponseStream(IDictionary<string, object> environment)
+        {
+            var responseStream = (Stream)environment[OwinResponseBody];
+
+            var wrapped = new WrappedStream(responseStream);
+
+            environment[OwinResponseBody] = wrapped;
+
+            return wrapped;
+        }
+
+        private static List<string> GetInitialResponseHeaders(IDictionary<string, object> environment)
+        {
+            var responseHeaders = (IDictionary<string, string[]>)environment[OwinResponseHeaders];
+            var responseHeaderKeys = responseHeaders.Keys.ToList();
+            responseHeaderKeys.Clear();
+            responseHeaderKeys.AddRange(responseHeaders.Select(responseHeader => responseHeader.Key));
+            return responseHeaderKeys;
+        }
+
+        private static bool IsDiagsRequest(IDictionary<string, object> environment)
         {
             var path = (string)environment["owin.RequestPath"];
 
@@ -70,8 +129,8 @@
         {
             var responseBytes = Encoding.UTF8.GetBytes(body);
 
-            var responseStream = (Stream)environment["owin.ResponseBody"];
-            var responseHeaders = (IDictionary<string, string[]>)environment["owin.ResponseHeaders"];
+            var responseStream = (Stream)environment[OwinResponseBody];
+            var responseHeaders = (IDictionary<string, string[]>)environment[OwinResponseHeaders];
 
             responseHeaders["Content-Length"] = new[] { responseBytes.Length.ToString(CultureInfo.InvariantCulture) };
             responseHeaders["Content-Type"] = new[] { contentType };

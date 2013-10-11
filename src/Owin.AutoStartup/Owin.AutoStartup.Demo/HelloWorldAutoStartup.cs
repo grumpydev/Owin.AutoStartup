@@ -1,6 +1,9 @@
 ﻿namespace Owin.AutoStartup.Demo
 {
+    using System;
     using System.Collections.Generic;
+    using System.Reflection;
+    using System.Threading.Tasks;
 
     public class HelloWorldAutoStartup : IAutoStartup
     {
@@ -26,8 +29,15 @@
         {
             builder.UseHandlerAsync((req, res) =>
             {
-                res.ContentType = "text/plain";
-                return res.WriteAsync("Hello, World!");
+                if (req.Path == "/")
+                {
+                    res.ContentType = "text/plain";
+                    return res.WriteAsync("Hello, World!");
+                }
+
+                var tcs = new TaskCompletionSource<object>();
+                tcs.SetResult(new Object());
+                return tcs.Task;
             });
         }
     }
