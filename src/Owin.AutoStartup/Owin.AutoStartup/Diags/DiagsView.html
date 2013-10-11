@@ -54,7 +54,7 @@
     <div id="contents">
         @IfNot.IsDiagsRequest
         <h2>Oops!</h2> 
-        <p>It appears that none of your installed middleware processed the request<sup>*</sup>. This may be intentional or you have have forgotten to install an AutoStartup to handle this request.</p>
+        <p>It appears that none of your installed middleware processed the request<sup>*</sup>. This may be intentional, or you have have forgotten to install an AutoStartup to handle this request.</p>
         <p>The requested path is: <span class="highlight">@Model.Path</span></p>
         @EndIf
         <h2>Registered AutoStartups</h2>
