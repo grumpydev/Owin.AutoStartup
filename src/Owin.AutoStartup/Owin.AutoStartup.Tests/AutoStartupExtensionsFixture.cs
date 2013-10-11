@@ -31,7 +31,7 @@
 
         public string Path { get; private set; }
 
-        public IDictionary<string, object[]> DefaultBuilderCommands { get; private set; }
+        public IEnumerable<string> DefaultBuilderCommands { get; private set; }
 
         public void Configuration(IAppBuilder builder)
         {

@@ -137,13 +137,41 @@
                                 {
                                     AutoStartups = this.autoStartups,
                                     Path = path,
-                                    IsDiagsRequest = isDiagsRequest
+                                    IsDiagsRequest = isDiagsRequest,
+                                    CodeSnippet = this.BuildSnippet(),
                                 }, 
                                 this.ssveHost);
 
             this.WriteResponse(environment, output, "text/html; charset=utf-8");
 
             return this.completedTask;
+        }
+
+        private string BuildSnippet()
+        {
+            var snippetBuilder = new StringBuilder();
+            snippetBuilder.AppendLine("\tpublic class Startup");
+            snippetBuilder.AppendLine("\t{");
+            snippetBuilder.AppendLine("\t\tpublic void Configuration(IAppBuilder builder)");
+            snippetBuilder.Append("\t\t{");
+
+            foreach (var autoStartup in this.autoStartups)
+            {
+                if (autoStartup.DefaultBuilderCommands.Any())
+                {
+                    snippetBuilder.AppendFormat("\n\t\t\t// AutoStartup: {0}\n", autoStartup.Name);
+                }
+
+                foreach (var command in autoStartup.DefaultBuilderCommands)
+                {
+                    snippetBuilder.AppendFormat("\t\t\t{0}\n", command);
+                }
+            }
+
+            snippetBuilder.AppendLine("\t\t}");
+            snippetBuilder.AppendLine("\t}");
+
+            return snippetBuilder.ToString();
         }
 
         private void WriteResponse(IDictionary<string, object> environment, string body, string contentType)

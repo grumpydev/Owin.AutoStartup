@@ -18,6 +18,13 @@
 
         private readonly Task<object> completedTask;
 
+        private readonly IEnumerable<string> defaultBuilderCommands = new[]
+                                                {
+                                                    "// No default builder for the hello world sample :-)",
+                                                    "// Real autostartups would have sample code here",
+                                                    "// To show how to 'convert' to a normal OWIN startup class"
+                                                };
+
         public string Name
         {
             get
@@ -40,7 +47,14 @@
             tcs.SetResult(new object());
             this.completedTask = tcs.Task;
         }
-        public IDictionary<string, object[]> DefaultBuilderCommands { get; private set; }
+
+        public IEnumerable<string> DefaultBuilderCommands
+        {
+            get
+            {
+                return this.defaultBuilderCommands;
+            }
+        }
 
         public void Configuration(IAppBuilder builder)
         {
@@ -50,12 +64,6 @@
                 {
                     res.ContentType = "text/html";
                     return res.WriteAsync(HelloWorldBody);
-                }
-
-                if (req.Path == "/ct")
-                {
-                    res.ContentType = "text/plain";
-                    return this.completedTask;
                 }
 
                 return this.completedTask;

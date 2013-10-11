@@ -68,6 +68,20 @@
             </li>
             @EndEach
         </ul>
+        <h2>"Normal" OWIN Startup Conversion</h2>
+        <p>
+            If you would like to move from Owin.AutoStartup to a "normal" OWIN Startup class, then you can remove the Owin.AutoStartup 
+            package and add a Startup class to your project instead. Please note that you may have to manually remove/reinstall additional packages 
+            depending on how the dependencies are configured in the installed NuGet packages - refer to the documentation for the framework / middleware 
+            items for more information. 
+        </p>
+        <p>
+            An example class (in C#) that should give you the same functionality as you have now
+            is as follows:
+<pre>
+@Model.CodeSnippet
+</pre>
+        </p>
         <p>You can disable this diagnostics page by removing the <span class="highlight">owin:AutoStartupDiagnostics</span> key from the web/app.config, or setting its value to <span class="highlight">false</span></p>
         @IfNot.IsDiagsRequest
         <p class="reference">

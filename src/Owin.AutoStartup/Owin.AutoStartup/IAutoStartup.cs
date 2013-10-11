@@ -1,5 +1,6 @@
 ﻿namespace Owin.AutoStartup
 {
+    using System;
     using System.Collections.Generic;
 
     /// <summary>
@@ -22,7 +23,7 @@
         /// Gets the default builder commands that are called in configure.
         /// Used for generating help text.
         /// </summary>
-        IDictionary<string, object[]> DefaultBuilderCommands { get; }
+        IEnumerable<String> DefaultBuilderCommands { get; }
 
         /// <summary>
         /// Configure the auto startup
