@@ -50,8 +50,8 @@
                 return this.RenderDiags(environment, true);
             }
 
-            var responseHeaderKeys = GetInitialResponseHeaders(environment);
-            var responseStream = WrapResponseStream(environment);
+            var initialResponseHeaders = GetInitialResponseHeaders(environment);
+            WrapResponseStream(environment);
 
             return this.RunNext(environment).ContinueWith(
                 t =>
@@ -64,7 +64,15 @@
                         var outputResponseHeaders = (IDictionary<string, string[]>)environment[OwinResponseHeaders];
                         foreach (var outputResponseHeader in outputResponseHeaders)
                         {
-                            if (!responseHeaderKeys.Any(k => k.Equals(outputResponseHeader.Key)))
+                            if (!initialResponseHeaders.Any(kvp => kvp.Key.Equals(outputResponseHeader.Key, StringComparison.OrdinalIgnoreCase)))
+                            {
+                                return t;
+                            }
+
+                            var initialHeaderValues = initialResponseHeaders.First(kvp => kvp.Key.Equals(outputResponseHeader.Key, StringComparison.OrdinalIgnoreCase))
+                                                                            .Value;
+
+                            if (!initialHeaderValues.SequenceEqual(outputResponseHeader.Value))
                             {
                                 return t;
                             }
@@ -89,24 +97,26 @@
             return responseStream.HasBeenWrittenTo;
         }
 
-        private static WrappedStream WrapResponseStream(IDictionary<string, object> environment)
+        private static void WrapResponseStream(IDictionary<string, object> environment)
         {
             var responseStream = (Stream)environment[OwinResponseBody];
 
             var wrapped = new WrappedStream(responseStream);
 
             environment[OwinResponseBody] = wrapped;
-
-            return wrapped;
         }
 
-        private static List<string> GetInitialResponseHeaders(IDictionary<string, object> environment)
+        private static List<KeyValuePair<string, string[]>> GetInitialResponseHeaders(IDictionary<string, object> environment)
         {
             var responseHeaders = (IDictionary<string, string[]>)environment[OwinResponseHeaders];
+            
+            // To work around issue with katana where it adds headers to the collection after it 
+            // has been iterated over for the first time.
             var responseHeaderKeys = responseHeaders.Keys.ToList();
-            responseHeaderKeys.Clear();
-            responseHeaderKeys.AddRange(responseHeaders.Select(responseHeader => responseHeader.Key));
-            return responseHeaderKeys;
+            
+            var responseHeaderKvps = new List<KeyValuePair<string, string[]>>(responseHeaders.Count);
+            responseHeaderKvps.AddRange(responseHeaders.Select(kvp => kvp));
+            return responseHeaderKvps;
         }
 
         private static bool IsDiagsRequest(IDictionary<string, object> environment)
