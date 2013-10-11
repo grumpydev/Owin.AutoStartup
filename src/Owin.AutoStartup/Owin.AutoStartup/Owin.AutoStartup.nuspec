@@ -1,17 +1,20 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>$id$</id>
-    <version>$version$</version>
-    <title>$title$</title>
-    <authors>$author$</authors>
-    <owners>$author$</owners>
+    <id>Owin.AutoStartup</id>
+    <version>1.0.0</version>
+    <title>Owin AutoStartup</title>
+    <authors>Steven Robbins</authors>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>$description$</description>
-    <copyright>Copyright (c) 2013 $author$</copyright>
+    <description>Automatic startup support for compatible OWIN hosts and middlewares</description>
+    <copyright>Copyright (c) 2013 Steven Robbins</copyright>
     <dependencies>
       <dependency id="Owin" />
     </dependencies> 
     <tags>Owin</tags>
   </metadata>
+  <files>
+    <file src="bin\Release\Owin.AutoStartup.dll" target="lib\net40" />
+    <file src="bin\Release\Owin.AutoStartup.xml" target="lib\net40" />
+  </files>
 </package>
