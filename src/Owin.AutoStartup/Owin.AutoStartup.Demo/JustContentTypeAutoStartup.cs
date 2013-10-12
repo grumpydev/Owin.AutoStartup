@@ -1,6 +1,8 @@
 ﻿namespace Owin.AutoStartup.Demo
 {
+    using System;
     using System.Collections.Generic;
+    using System.Net.Mime;
     using System.Threading.Tasks;
 
     public class JustContentTypeAutoStartup : IAutoStartup
@@ -47,17 +49,24 @@
 
         public void Configuration(IAppBuilder builder)
         {
-            builder.UseHandlerAsync((req, res) =>
-            {
-                if (req.Path == "/ct")
-                {
-                    res.ContentType = "text/plain";
-                    return this.completedTask;
-                }
-
-                return this.completedTask;
-            });
+            builder.UseFunc(this.Middleware);
         }
-         
+
+        private Func<IDictionary<string, object>, Task> Middleware(Func<IDictionary<string, object>, Task> next)
+        {
+            return env =>
+                {
+                    var path = (string)env["owin.RequestPath"];
+
+                    if (path == "/ct")
+                    {
+                        var outputResponseHeaders = (IDictionary<string, string[]>)env["owin.ResponseHeaders"];
+                        outputResponseHeaders["Content-Type"] = new[] { "text/plain" };
+                        return this.completedTask;
+                    }
+
+                    return next(env);
+                };
+        }
     }
 }

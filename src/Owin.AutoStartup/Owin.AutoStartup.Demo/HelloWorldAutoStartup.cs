@@ -2,7 +2,9 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Reflection;
+    using System.Text;
     using System.Threading.Tasks;
 
     public class HelloWorldAutoStartup : IAutoStartup
@@ -58,16 +60,28 @@
 
         public void Configuration(IAppBuilder builder)
         {
-            builder.UseHandlerAsync((req, res) =>
+            builder.UseFunc(this.Middleware);
+        }
+
+        private Func<IDictionary<string, object>, Task> Middleware(Func<IDictionary<string, object>, Task> next)
+        {
+            return env =>
             {
-                if (req.Path == "/")
+                var path = (string)env["owin.RequestPath"];
+
+                if (path == "/")
                 {
-                    res.ContentType = "text/html";
-                    return res.WriteAsync(HelloWorldBody);
+                    var outputResponseHeaders = (IDictionary<string, string[]>)env["owin.ResponseHeaders"];
+                    outputResponseHeaders["Content-Type"] = new[] { "text/html" };
+
+                    var responseStream = (Stream)env["owin.ResponseBody"];
+                    var responseBytes = Encoding.UTF8.GetBytes(HelloWorldBody);
+
+                    return responseStream.WriteAsync(responseBytes, 0, responseBytes.Length);
                 }
 
                 return this.completedTask;
-            });
+            };
         }
     }
 }
