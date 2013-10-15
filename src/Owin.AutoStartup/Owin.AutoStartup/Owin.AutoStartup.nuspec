@@ -6,7 +6,10 @@
     <title>Owin AutoStartup</title>
     <authors>Steven Robbins</authors>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <licenseUrl>https://github.com/grumpydev/Owin.AutoStartup/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/grumpydev/Owin.AutoStartup</projectUrl>
     <description>Automatic startup support for compatible OWIN hosts and middlewares</description>
+    <summary>Automatic startup support for compatible OWIN hosts and middlewares</summary>
     <copyright>Copyright (c) 2013 Steven Robbins</copyright>
     <dependencies>
       <dependency id="Owin" />
