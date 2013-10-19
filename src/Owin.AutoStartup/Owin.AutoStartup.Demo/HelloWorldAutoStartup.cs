@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Generic;
     using System.IO;
-    using System.Reflection;
     using System.Text;
     using System.Threading.Tasks;
 
@@ -27,6 +26,8 @@
                                                     "// To show how to 'convert' to a normal OWIN startup class"
                                                 };
 
+        private readonly IEnumerable<string> nonAutoStartupNugets = new[] { "Hello.World.Owin" };
+
         public string Name
         {
             get
@@ -48,6 +49,14 @@
             var tcs = new TaskCompletionSource<object>();
             tcs.SetResult(new object());
             this.completedTask = tcs.Task;
+        }
+
+        public IEnumerable<string> NonAutoStartupNugets
+        {
+            get
+            {
+                return this.nonAutoStartupNugets;
+            }
         }
 
         public IEnumerable<string> DefaultBuilderCommands

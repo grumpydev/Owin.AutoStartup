@@ -31,6 +31,8 @@
 
         public string Path { get; private set; }
 
+        public IEnumerable<string> NonAutoStartupNugets { get; private set; }
+
         public IEnumerable<string> DefaultBuilderCommands { get; private set; }
 
         public void Configuration(IAppBuilder builder)

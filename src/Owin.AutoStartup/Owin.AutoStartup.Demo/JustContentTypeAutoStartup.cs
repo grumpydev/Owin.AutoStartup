@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Net.Mime;
     using System.Threading.Tasks;
 
     public class JustContentTypeAutoStartup : IAutoStartup
@@ -15,6 +14,8 @@
                                                     "// If it included a helper Builder extension method",
                                                     "builder.UseCt();"
                                                 };
+
+        private readonly IEnumerable<string> nonAutoStartupNugets = new[] { "Just.ContentType.Owin" };
 
         public string Name
         {
@@ -37,6 +38,14 @@
             var tcs = new TaskCompletionSource<object>();
             tcs.SetResult(new object());
             this.completedTask = tcs.Task;
+        }
+
+        public IEnumerable<string> NonAutoStartupNugets
+        {
+            get
+            {
+                return this.nonAutoStartupNugets;
+            }
         }
 
         public IEnumerable<string> DefaultBuilderCommands

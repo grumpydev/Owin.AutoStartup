@@ -20,6 +20,13 @@
         string Path { get; }
 
         /// <summary>
+        /// Gets the NuGet packages that a user would need to install in order
+        /// to convert their application from AutoStartup to a normal OWIN application.
+        /// e.g. Nancy.Owin
+        /// </summary>
+        IEnumerable<String> NonAutoStartupNugets { get; }
+
+        /// <summary>
         /// Gets the default builder commands that are called in configure.
         /// Used for generating help text.
         /// </summary>
