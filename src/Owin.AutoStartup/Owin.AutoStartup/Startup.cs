@@ -41,13 +41,13 @@
 
             if (appSetting == null)
             {
-                return false;
+                return true;
             }
 
             bool enable;
             if (!bool.TryParse(appSetting, out enable))
             {
-                return false;
+                return true;
             }
 
             return enable;
